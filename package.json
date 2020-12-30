@@ -3,11 +3,23 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --write {pages,components}/**/*.{js,jsx}"
   },
   "dependencies": {
     "next": "^10.0.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^1.17.0"
+  },
+  "prettierConfig": {
+    "endOfLine": "lf",
+    "semi": true,
+    "singleQuote": false,
+    "tabWidth": 2,
+    "useTabs": false,
+    "trailingComma": "es5"
   }
 }

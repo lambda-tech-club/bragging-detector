@@ -1,6 +1,6 @@
-import React from 'react'
-import Link from 'next/link'
-import Head from '../components/head'
+import React from "react";
+import Link from "next/link";
+import Head from "../components/head";
 
 const Home = () => (
   <div>
@@ -12,6 +12,6 @@ const Home = () => (
       </p>
     </div>
   </div>
-)
+);
 
-export default Home
+export default Home;
