@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Head from "../components/head";
 import Container from "@material-ui/core/Container";
@@ -12,8 +12,34 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 
 const Home = () => {
+  const recognizerRef = useRef();
+  const [finalText, setFinalText] = useState("");
+  const [transcript, setTranscript] = useState("");
   const candidates = ["年収", "自由", "成功"];
   const [open, setOpen] = useState(true);
+
+  useEffect(() => {
+    recognizerRef.current = new window.webkitSpeechRecognition();
+    recognizerRef.current.lang = "ja-JP";
+    recognizerRef.current.interimResults = true;
+    recognizerRef.current.continuous = true;
+    recognizerRef.current.onresult = event => {
+      [...event.results].slice(event.resultIndex).forEach(result => {
+        const transcript = result[0].transcript;
+        if (result.isFinal) {
+          setFinalText(prevState => {
+            return prevState + transcript;
+          });
+          setTranscript("");
+        } else {
+          if (transcript.includes("テスト")) {
+            console.log("マッチした");
+          }
+          setTranscript(transcript);
+        }
+      });
+    };
+  });
 
   const handleClick = () => {
     setOpen(true);
@@ -23,9 +49,9 @@ const Home = () => {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
+
   return (
     <div>
       <Head title="Home" />
@@ -42,7 +68,11 @@ const Home = () => {
       <Container>
         <h1>自慢ディテクター</h1>
         <Box fontSize={25}>
-          <p>会話の内容会話の内容</p>
+          <p>
+            {finalText}
+            <span style={{ color: "#aaa" }}>{transcript}</span>
+          </p>
+          <div id="result-div"></div>
         </Box>
         <Autocomplete
           multiple
@@ -51,7 +81,6 @@ const Home = () => {
           defaultValue={["テスト"]}
           freeSolo
           renderTags={(value, getTagProps) => {
-            console.log(value);
             return value.map((option, index) => (
               <Chip
                 variant="outlined"
@@ -72,7 +101,14 @@ const Home = () => {
         <Box m={2}>
           <Grid container alignItems="center" justify="center">
             <Grid item>
-              <Button variant="outlined" color="secondary" size="large">
+              <Button
+                variant="outlined"
+                color="secondary"
+                size="large"
+                onClick={() => {
+                  recognizerRef.current.start();
+                }}
+              >
                 検知開始
               </Button>
             </Grid>
