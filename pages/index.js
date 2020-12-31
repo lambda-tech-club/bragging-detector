@@ -19,7 +19,13 @@ const Home = () => {
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
-    recognizerRef.current = new window.webkitSpeechRecognition();
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      console.log("未対応ブラウザ");
+      return;
+    }
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognizerRef.current = new SpeechRecognition();
     recognizerRef.current.lang = "ja-JP";
     recognizerRef.current.interimResults = true;
     recognizerRef.current.continuous = true;
