@@ -108,7 +108,7 @@ const Home = () => {
         <Box fontSize={25}>
           <p>
             {finalText}
-            <span style={{ color: "#aaa" }}>{transcript}</span>
+            <span style={{ color: alertOpen ? "#f00" : "#aaa" }}>{transcript}</span>
           </p>
           <div id="result-div"></div>
         </Box>
