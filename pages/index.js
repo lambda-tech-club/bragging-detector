@@ -15,8 +15,10 @@ const Home = () => {
   const recognizerRef = useRef();
   const [finalText, setFinalText] = useState("");
   const [transcript, setTranscript] = useState("");
+  const [tagValues, setTagValues] = useState([]);
+  const [detecting, setDetecting] = useState(false);
   const candidates = ["年収", "自由", "成功"];
-  const [open, setOpen] = useState(true);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
@@ -29,6 +31,12 @@ const Home = () => {
     recognizerRef.current.lang = "ja-JP";
     recognizerRef.current.interimResults = true;
     recognizerRef.current.continuous = true;
+    recognizerRef.current.onstart = () => {
+      setDetecting(true);
+    };
+    recognizerRef.current.onend = () => {
+      setDetecting(false);
+    };
     recognizerRef.current.onresult = event => {
       [...event.results].slice(event.resultIndex).forEach(result => {
         const transcript = result[0].transcript;
@@ -38,8 +46,10 @@ const Home = () => {
           });
           setTranscript("");
         } else {
-          if (transcript.includes("テスト")) {
+          console.log(tagValues);
+          if (tagValues.some(value => transcript.includes(value))) {
             console.log("マッチした");
+            setAlertOpen(true);
           }
           setTranscript(transcript);
         }
@@ -47,25 +57,22 @@ const Home = () => {
     };
   });
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
-
   return (
     <div>
       <Head title="Home" />
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={() => {
+          setAlertOpen(false);
+        }}
+      >
         <MuiAlert
           elevation={6}
           variant="filled"
-          onClose={handleClose}
+          onClose={() => {
+            setAlertOpen(false);
+          }}
           severity="error"
         >
           自慢を検知しました
@@ -81,41 +88,47 @@ const Home = () => {
           <div id="result-div"></div>
         </Box>
         <Autocomplete
+          disabled={detecting}
           multiple
           id="tags-filled"
           options={candidates}
-          defaultValue={["テスト"]}
           freeSolo
-          renderTags={(value, getTagProps) => {
-            return value.map((option, index) => (
+          onChange={(event, values) => {
+            setTagValues(values);
+          }}
+          renderTags={(value, getTagProps) =>
+            value.map((option, index) => (
               <Chip
                 variant="outlined"
                 label={option}
                 {...getTagProps({ index })}
               />
-            ));
+            ))
+          }
+          renderInput={params => {
+            return (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="反応する単語"
+                placeholder="単語を追加 +"
+              />
+            );
           }}
-          renderInput={params => (
-            <TextField
-              {...params}
-              variant="outlined"
-              label="反応する単語"
-              placeholder="単語を追加 +"
-            />
-          )}
         />
         <Box m={2}>
           <Grid container alignItems="center" justify="center">
             <Grid item>
               <Button
                 variant="outlined"
+                disabled={detecting}
                 color="secondary"
                 size="large"
                 onClick={() => {
                   recognizerRef.current.start();
                 }}
               >
-                検知開始
+                {detecting ? "検知中..." : "検知開始"}
               </Button>
             </Grid>
           </Grid>
