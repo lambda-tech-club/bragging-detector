@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "next": "^10.0.4",
     "react": "^17.0.1",
