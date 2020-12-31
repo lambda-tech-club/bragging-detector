@@ -29,7 +29,7 @@ const Home = () => {
   useEffect(() => {
     const music = new Audio("/static/warning01.mp3");
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-      console.log("未対応ブラウザ");
+      alert("お使いのブラウザには未対応です");
       return;
     }
     const SpeechRecognition =
@@ -108,7 +108,9 @@ const Home = () => {
         <Box fontSize={25}>
           <p>
             {finalText}
-            <span style={{ color: alertOpen ? "#f00" : "#aaa" }}>{transcript}</span>
+            <span style={{ color: alertOpen ? "#f00" : "#aaa" }}>
+              {transcript}
+            </span>
           </p>
           <div id="result-div"></div>
         </Box>
