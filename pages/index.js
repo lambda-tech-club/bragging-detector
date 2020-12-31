@@ -14,13 +14,14 @@ import Button from "@material-ui/core/Button";
 const Home = () => {
   const recognizerRef = useRef();
   const [finalText, setFinalText] = useState("");
-  const [transcript, setTranscript] = useState("");
+  const [transcript, setTranscript] = useState("ボタンを押して検知開始");
   const [tagValues, setTagValues] = useState([]);
   const [detecting, setDetecting] = useState(false);
   const candidates = ["年収", "自由", "成功"];
   const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
+    const music = new Audio("/static/warning01.mp3");
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
       console.log("未対応ブラウザ");
       return;
@@ -48,7 +49,7 @@ const Home = () => {
         } else {
           console.log(tagValues);
           if (tagValues.some(value => transcript.includes(value))) {
-            console.log("マッチした");
+            music.play();
             setAlertOpen(true);
           }
           setTranscript(transcript);
