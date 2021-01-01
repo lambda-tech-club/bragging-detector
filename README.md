@@ -1,4 +1,8 @@
-<img src="https://bragging-detector.vercel.app/static/logo.png" height="200px" alt="自慢ディテクター" style="background: white">
+<p align="center" style="background-color: white">
+  <a href="https://bragging-detector.vercel.app/">
+    <img src="https://bragging-detector.vercel.app/static/logo.png" height="200px" alt="自慢ディテクター" />
+  </a>
+</p>
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
