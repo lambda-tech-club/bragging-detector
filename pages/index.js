@@ -109,12 +109,16 @@ const Home = () => {
           <Grid item>
             <UploadButton
               disabled={detecting}
+              fileType="audio"
               onFileChange={(file) => {
                 const src = window.URL.createObjectURL(file);
                 const audio = new Audio(src);
                 setUserMusic(audio);
                 setUserMusicName(file.name);
                 setFileLoaded(true);
+              }}
+              onInvalidFileError={() => {
+                alert("オーディオファイルを選択してください");
               }}
             />
           </Grid>

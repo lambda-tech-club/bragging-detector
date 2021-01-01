@@ -1,12 +1,12 @@
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
-import { bool, func, object } from "prop-types";
+import { bool, func, string } from "prop-types";
 
 const UploadButton = (props) => (
   <div>
     <input
-      accept="audio/*"
+      accept={`${props.fileType}/*`}
       id="file-input"
       multiple
       type="file"
@@ -14,8 +14,8 @@ const UploadButton = (props) => (
       onChange={(event) => {
         const file = event.target.files[0];
         if (!(file instanceof File)) return;
-        if (file.type.indexOf("audio") === -1) {
-          alert("オーディオファイルを選択してください");
+        if (file.type.indexOf(props.fileType) === -1) {
+          props.onInvalidFileError();
           return;
         }
         props.onFileChange(file);
@@ -37,6 +37,8 @@ const UploadButton = (props) => (
 
 UploadButton.propTypes = {
   onFileChange: func,
+  onInvalidFileError: func,
+  fileType: string,
   disabled: bool,
 };
 
