@@ -1,29 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import Head from "../components/head";
 import Container from "@material-ui/core/Container";
 import Chip from "@material-ui/core/Chip";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
+import Notice from "../components/notice";
 
 const Home = () => {
   const recognizerRef = useRef();
   const inputRef = useRef();
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [fileLoaded, setFileLoaded] = useState(false);
   const [finalText, setFinalText] = useState("");
   const [transcript, setTranscript] = useState("ボタンを押して検知開始");
   const initialTagValues = ["年収"];
   const [tagValues, setTagValues] = useState(initialTagValues);
   const [detecting, setDetecting] = useState(false);
   const candidates = ["年収", "自由", "成功"];
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [fileLoaded, setFileLoaded] = useState(false);
   const [userMusic, setUserMusic] = useState(null);
   const [userMusicName, setUserMusicName] = useState("");
 
@@ -45,16 +43,16 @@ const Home = () => {
     recognizerRef.current.onend = () => {
       setDetecting(false);
     };
-    recognizerRef.current.onresult = event => {
-      [...event.results].slice(event.resultIndex).forEach(result => {
+    recognizerRef.current.onresult = (event) => {
+      [...event.results].slice(event.resultIndex).forEach((result) => {
         const transcript = result[0].transcript;
         if (result.isFinal) {
-          setFinalText(prevState => {
+          setFinalText((prevState) => {
             return prevState + transcript;
           });
           setTranscript("");
         } else {
-          if (tagValues.some(value => transcript.includes(value))) {
+          if (tagValues.some((value) => transcript.includes(value))) {
             (userMusic || music).play();
             setAlertOpen(true);
           }
@@ -67,42 +65,24 @@ const Home = () => {
   return (
     <div>
       <Head title="Home" />
-      <Snackbar
+      <Notice
         open={alertOpen}
-        autoHideDuration={6000}
+        severity="error"
         onClose={() => {
           setAlertOpen(false);
         }}
       >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={() => {
-            setAlertOpen(false);
-          }}
-          severity="error"
-        >
-          自慢を検知しました
-        </MuiAlert>
-      </Snackbar>
-      <Snackbar
+        自慢を検知しました
+      </Notice>
+      <Notice
         open={fileLoaded}
-        autoHideDuration={6000}
+        severity="success"
         onClose={() => {
           setFileLoaded(false);
         }}
       >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={() => {
-            setFileLoaded(false);
-          }}
-          severity="success"
-        >
-          {userMusicName}を読み込みました
-        </MuiAlert>
-      </Snackbar>
+        {userMusicName}を読み込みました
+      </Notice>
       <Container>
         <Grid container alignItems="center" justify="center">
           <Grid item>
@@ -139,7 +119,7 @@ const Home = () => {
                   />
                 ))
               }
-              renderInput={params => {
+              renderInput={(params) => {
                 return (
                   <TextField
                     {...params}
@@ -159,7 +139,7 @@ const Home = () => {
               multiple
               type="file"
               style={{ display: "none" }}
-              onChange={event => {
+              onChange={(event) => {
                 const file = event.target.files[0];
                 if (!(file instanceof File)) return;
                 if (file.type.indexOf("audio") === -1) {
