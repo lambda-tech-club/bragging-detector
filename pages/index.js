@@ -104,7 +104,11 @@ const Home = () => {
         </MuiAlert>
       </Snackbar>
       <Container>
-        <h1>自慢ディテクター</h1>
+        <Grid container alignItems="center" justify="center">
+          <Grid item>
+            <img src="/static/logo.png" height="200px" />
+          </Grid>
+        </Grid>
         <Box fontSize={25}>
           <p>
             {finalText}
