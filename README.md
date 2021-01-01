@@ -1,8 +1,10 @@
-![自慢ディテクター](https://bragging-detector.vercel.app/static/logo.png)
+<img src="https://bragging-detector.vercel.app/static/logo.png" height="200px" alt="自慢ディテクター" style="background: white">
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 会話中の文章を認識して自慢を検知します。自慢が検知されたときに効果音を鳴らすことができるアプリケーションです。
+
+https://bragging-detector.vercel.app/
 
 ## Folder Structure
 
