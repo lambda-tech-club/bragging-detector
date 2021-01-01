@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import Head from "../components/head";
 import Container from "@material-ui/core/Container";
-import Chip from "@material-ui/core/Chip";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Notice from "../components/notice";
 import UploadButton from "../components/uploadButton";
+import TagField from "../components/tagField";
 
 const Home = () => {
   const recognizerRef = useRef();
@@ -98,34 +96,14 @@ const Home = () => {
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={11}>
-            <Autocomplete
+            <TagField
               disabled={detecting}
-              multiple
-              id="tags-filled"
               options={candidates}
-              freeSolo
               defaultValue={initialTagValues}
-              onChange={(event, values) => {
+              label="反応する単語"
+              placeholder="単語を追加 +"
+              onTagChange={(values) => {
                 setTagValues(values);
-              }}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    variant="outlined"
-                    label={option}
-                    {...getTagProps({ index })}
-                  />
-                ))
-              }
-              renderInput={(params) => {
-                return (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="反応する単語"
-                    placeholder="単語を追加 +"
-                  />
-                );
               }}
             />
           </Grid>
