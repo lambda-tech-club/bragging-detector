@@ -10,24 +10,32 @@ import TagField from "../components/tagField";
 import TranscriptField from "../components/transcriptField";
 
 const Home = () => {
+  // 音声認識インスタンス
   const recognizerRef = useRef();
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [fileLoaded, setFileLoaded] = useState(false);
-  const [finalText, setFinalText] = useState("");
-  const [transcript, setTranscript] = useState("ボタンを押して検知開始");
-  const initialTagValues = ["年収"];
-  const [tagValues, setTagValues] = useState(initialTagValues);
-  const [detecting, setDetecting] = useState(false);
-  const candidates = ["年収", "自由", "成功"];
-  const [userMusic, setUserMusic] = useState(null);
-  const [userMusicName, setUserMusicName] = useState("");
+  // スナックバー表示
+  const [alertOpen, setAlertOpen] = useState(false); // 自慢検知アラート
+  const [fileLoaded, setFileLoaded] = useState(false); // ファイル読み込み完了
+  // 音声認識
+  const [detecting, setDetecting] = useState(false); // 音声認識ステータス
+  const [finalText, setFinalText] = useState(""); // 確定された文章
+  const [transcript, setTranscript] = useState("ボタンを押して検知開始"); // 認識中の文章
+  // 単語検知
+  const initialTagValues = ["年収"]; // デフォルト検知単語
+  const candidates = ["年収", "自由", "成功"]; // 検知単語候補
+  const [tagValues, setTagValues] = useState(initialTagValues); // 検知単語一覧
+  // 効果音
+  const music = new Audio("/static/warning01.mp3"); // デフォルト音
+  const [userMusic, setUserMusic] = useState(null); // ユーザー追加音
+  const [userMusicName, setUserMusicName] = useState(""); // ファイル名
 
   useEffect(() => {
-    const music = new Audio("/static/warning01.mp3");
+    // NOTE: Web Speech APIが使えるブラウザか判定
+    // https://developer.mozilla.org/ja/docs/Web/API/Web_Speech_API
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
       alert("お使いのブラウザには未対応です");
       return;
     }
+    // NOTE: 将来的にwebkit prefixが取れる可能性があるため
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     recognizerRef.current = new SpeechRecognition();
@@ -44,12 +52,15 @@ const Home = () => {
       [...event.results].slice(event.resultIndex).forEach((result) => {
         const transcript = result[0].transcript;
         if (result.isFinal) {
+          // 音声認識が完了して文章が確定
           setFinalText((prevState) => {
             return prevState + transcript;
           });
           setTranscript("");
         } else {
+          // 音声認識の途中経過
           if (tagValues.some((value) => transcript.includes(value))) {
+            // NOTE: ユーザーが効果音を追加しなければデフォルトを鳴らす
             (userMusic || music).play();
             setAlertOpen(true);
           }
@@ -61,7 +72,7 @@ const Home = () => {
 
   return (
     <div>
-      <Head title="Home" />
+      <Head title="自慢ディテクター" />
       <Notice
         open={alertOpen}
         severity="error"
@@ -83,7 +94,7 @@ const Home = () => {
       <Container>
         <Grid container alignItems="center" justify="center">
           <Grid item>
-            <img src="/static/logo.png" height="200px" />
+            <img src="/static/logo.png" height="200px" alt="自慢ディテクター" />
           </Grid>
         </Grid>
         <Box fontSize={25}>
