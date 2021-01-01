@@ -4,7 +4,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import { bool, func, array, string } from "prop-types";
 
-const TagField = (props) => (
+const TagField = props => (
   <Autocomplete
     disabled={props.disabled}
     multiple
@@ -20,7 +20,7 @@ const TagField = (props) => (
         <Chip variant="outlined" label={option} {...getTagProps({ index })} />
       ))
     }
-    renderInput={(params) => {
+    renderInput={params => {
       return (
         <TextField
           {...params}
@@ -39,7 +39,7 @@ TagField.propTypes = {
   disabled: bool,
   onTagChange: func,
   label: string,
-  placeholder: string,
+  placeholder: string
 };
 
 export default TagField;

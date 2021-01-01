@@ -3,7 +3,7 @@ import IconButton from "@material-ui/core/IconButton";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import { bool, func, string } from "prop-types";
 
-const UploadButton = (props) => (
+const UploadButton = props => (
   <div>
     <input
       accept={`${props.fileType}/*`}
@@ -11,7 +11,7 @@ const UploadButton = (props) => (
       multiple
       type="file"
       style={{ display: "none" }}
-      onChange={(event) => {
+      onChange={event => {
         const file = event.target.files[0];
         if (!(file instanceof File)) return;
         if (file.type.indexOf(props.fileType) === -1) {
@@ -39,7 +39,7 @@ UploadButton.propTypes = {
   onFileChange: func,
   onInvalidFileError: func,
   fileType: string,
-  disabled: bool,
+  disabled: bool
 };
 
 export default UploadButton;

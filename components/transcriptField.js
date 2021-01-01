@@ -1,7 +1,7 @@
 import React from "react";
 import { bool, string } from "prop-types";
 
-const TranscriptField = (props) => (
+const TranscriptField = props => (
   <p>
     {props.finalText}
     <span style={{ color: props.isMatch ? "#f00" : "#aaa" }}>
@@ -13,7 +13,7 @@ const TranscriptField = (props) => (
 TranscriptField.propTypes = {
   isMatch: bool,
   finalText: string,
-  transcript: string,
+  transcript: string
 };
 
 export default TranscriptField;
