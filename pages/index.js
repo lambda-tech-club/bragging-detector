@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import Notice from "../components/notice";
 import UploadButton from "../components/uploadButton";
 import TagField from "../components/tagField";
+import TranscriptField from "../components/transcriptField";
 
 const Home = () => {
   const recognizerRef = useRef();
@@ -86,13 +87,11 @@ const Home = () => {
           </Grid>
         </Grid>
         <Box fontSize={25}>
-          <p>
-            {finalText}
-            <span style={{ color: alertOpen ? "#f00" : "#aaa" }}>
-              {transcript}
-            </span>
-          </p>
-          <div id="result-div"></div>
+          <TranscriptField
+            finalText={finalText}
+            transcript={transcript}
+            isMatch={alertOpen}
+          />
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={11}>
