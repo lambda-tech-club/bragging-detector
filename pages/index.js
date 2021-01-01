@@ -24,11 +24,11 @@ const Home = () => {
   const candidates = ["年収", "自由", "成功"]; // 検知単語候補
   const [tagValues, setTagValues] = useState(initialTagValues); // 検知単語一覧
   // 効果音
-  const music = new Audio("/static/warning01.mp3"); // デフォルト音
   const [userMusic, setUserMusic] = useState(null); // ユーザー追加音
   const [userMusicName, setUserMusicName] = useState(""); // ファイル名
 
   useEffect(() => {
+    const music = new Audio("/static/warning01.mp3"); // デフォルト音
     // NOTE: Web Speech APIが使えるブラウザか判定
     // https://developer.mozilla.org/ja/docs/Web/API/Web_Speech_API
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
@@ -48,18 +48,18 @@ const Home = () => {
     recognizerRef.current.onend = () => {
       setDetecting(false);
     };
-    recognizerRef.current.onresult = event => {
-      [...event.results].slice(event.resultIndex).forEach(result => {
+    recognizerRef.current.onresult = (event) => {
+      [...event.results].slice(event.resultIndex).forEach((result) => {
         const transcript = result[0].transcript;
         if (result.isFinal) {
           // 音声認識が完了して文章が確定
-          setFinalText(prevState => {
+          setFinalText((prevState) => {
             return prevState + transcript;
           });
           setTranscript("");
         } else {
           // 音声認識の途中経過
-          if (tagValues.some(value => transcript.includes(value))) {
+          if (tagValues.some((value) => transcript.includes(value))) {
             // NOTE: ユーザーが効果音を追加しなければデフォルトを鳴らす
             (userMusic || music).play();
             setAlertOpen(true);
@@ -112,7 +112,7 @@ const Home = () => {
               defaultValue={initialTagValues}
               label="反応する単語"
               placeholder="単語を追加 +"
-              onTagChange={values => {
+              onTagChange={(values) => {
                 setTagValues(values);
               }}
             />
@@ -121,7 +121,7 @@ const Home = () => {
             <UploadButton
               disabled={detecting}
               fileType="audio"
-              onFileChange={file => {
+              onFileChange={(file) => {
                 const src = window.URL.createObjectURL(file);
                 const audio = new Audio(src);
                 setUserMusic(audio);
