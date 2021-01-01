@@ -7,13 +7,11 @@ import TextField from "@material-ui/core/TextField";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import Notice from "../components/notice";
+import UploadButton from "../components/uploadButton";
 
 const Home = () => {
   const recognizerRef = useRef();
-  const inputRef = useRef();
   const [alertOpen, setAlertOpen] = useState(false);
   const [fileLoaded, setFileLoaded] = useState(false);
   const [finalText, setFinalText] = useState("");
@@ -132,20 +130,9 @@ const Home = () => {
             />
           </Grid>
           <Grid item>
-            <input
-              ref={inputRef}
-              accept="audio/*"
-              id="file-input"
-              multiple
-              type="file"
-              style={{ display: "none" }}
-              onChange={(event) => {
-                const file = event.target.files[0];
-                if (!(file instanceof File)) return;
-                if (file.type.indexOf("audio") === -1) {
-                  alert("オーディオファイルを選択してください");
-                  return;
-                }
+            <UploadButton
+              disabled={detecting}
+              onFileChange={(file) => {
                 const src = window.URL.createObjectURL(file);
                 const audio = new Audio(src);
                 setUserMusic(audio);
@@ -153,17 +140,6 @@ const Home = () => {
                 setFileLoaded(true);
               }}
             />
-            <label htmlFor="file-input">
-              <IconButton
-                color="primary"
-                size="large"
-                disabled={detecting}
-                aria-label="upload audio"
-                component="span"
-              >
-                <LibraryMusicIcon />
-              </IconButton>
-            </label>
           </Grid>
         </Grid>
         <Box m={2}>
