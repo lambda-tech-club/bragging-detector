@@ -18,7 +18,8 @@ const Home = () => {
   const inputRef = useRef();
   const [finalText, setFinalText] = useState("");
   const [transcript, setTranscript] = useState("ボタンを押して検知開始");
-  const [tagValues, setTagValues] = useState([]);
+  const initialTagValues = ["年収"];
+  const [tagValues, setTagValues] = useState(initialTagValues);
   const [detecting, setDetecting] = useState(false);
   const candidates = ["年収", "自由", "成功"];
   const [alertOpen, setAlertOpen] = useState(false);
@@ -53,7 +54,6 @@ const Home = () => {
           });
           setTranscript("");
         } else {
-          console.log(tagValues);
           if (tagValues.some(value => transcript.includes(value))) {
             (userMusic || music).play();
             setAlertOpen(true);
@@ -122,6 +122,7 @@ const Home = () => {
               id="tags-filled"
               options={candidates}
               freeSolo
+              defaultValue={initialTagValues}
               onChange={(event, values) => {
                 setTagValues(values);
               }}
