@@ -42,10 +42,12 @@ const Home = () => {
     recognizerRef.current.lang = "ja-JP";
     recognizerRef.current.interimResults = true;
     recognizerRef.current.continuous = true;
+    recognizerRef.current.maxAlternatives = 1;
     recognizerRef.current.onstart = () => {
       setDetecting(true);
     };
     recognizerRef.current.onend = () => {
+      setTranscript("");
       setDetecting(false);
     };
     recognizerRef.current.onresult = event => {
@@ -57,15 +59,15 @@ const Home = () => {
             return prevState + transcript;
           });
           setTranscript("");
-        } else {
-          // 音声認識の途中経過
-          if (tagValues.some(value => transcript.includes(value))) {
-            // NOTE: ユーザーが効果音を追加しなければデフォルトを鳴らす
-            (userMusic || music).play();
-            setAlertOpen(true);
-          }
-          setTranscript(transcript);
+          return;
         }
+        // 音声認識の途中経過
+        if (tagValues.some(value => transcript.includes(value))) {
+          // NOTE: ユーザーが効果音を追加しなければデフォルトを鳴らす
+          (userMusic || music).play();
+          setAlertOpen(true);
+        }
+        setTranscript(transcript);
       });
     };
   });
@@ -136,17 +138,31 @@ const Home = () => {
         </Grid>
         <Box m={2}>
           <Grid container alignItems="center" justify="center">
-            <Grid item>
+            <Grid item xs={3}>
               <Button
                 variant="outlined"
                 disabled={detecting}
-                color="secondary"
+                color="primary"
                 size="large"
                 onClick={() => {
                   recognizerRef.current.start();
                 }}
               >
                 {detecting ? "検知中..." : "検知開始"}
+              </Button>
+            </Grid>
+            <Grid item xs={6}/>
+            <Grid item xs={3}>
+              <Button
+                  variant="outlined"
+                  disabled={!detecting}
+                  color="secondary"
+                  size="large"
+                  onClick={() => {
+                    recognizerRef.current.onend();
+                  }}
+              >
+                {detecting ? "検知停止" : "検知待ち"}
               </Button>
             </Grid>
           </Grid>
