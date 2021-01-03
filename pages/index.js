@@ -19,6 +19,7 @@ const Home = () => {
   const [detecting, setDetecting] = useState(false); // 音声認識ステータス
   const [finalText, setFinalText] = useState(""); // 確定された文章
   const [transcript, setTranscript] = useState("ボタンを押して検知開始"); // 認識中の文章
+  const [android, setAndroid] = useState(false); // Android chrome用のフラグ
   // 単語検知
   const initialTagValues = ["年収"]; // デフォルト検知単語
   const candidates = ["年収", "自由", "成功"]; // 検知単語候補
@@ -35,6 +36,12 @@ const Home = () => {
       alert("お使いのブラウザには未対応です");
       return;
     }
+
+    // Androidのためのプラグ
+    if (/Android/i.test(navigator.userAgent)) {
+      setAndroid(true);
+    };
+
     // NOTE: 将来的にwebkit prefixが取れる可能性があるため
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -42,32 +49,33 @@ const Home = () => {
     recognizerRef.current.lang = "ja-JP";
     recognizerRef.current.interimResults = true;
     recognizerRef.current.continuous = true;
-    recognizerRef.current.maxAlternatives = 1;
     recognizerRef.current.onstart = () => {
       setDetecting(true);
     };
     recognizerRef.current.onend = () => {
-      setTranscript("");
       setDetecting(false);
+      if (android && !alertOpen) {
+        recognizerRef.current.start();
+      }
     };
     recognizerRef.current.onresult = event => {
       [...event.results].slice(event.resultIndex).forEach(result => {
         const transcript = result[0].transcript;
+        setTranscript(transcript);
         if (result.isFinal) {
+          if (tagValues.some(value => transcript.includes(value))) {
+            // NOTE: ユーザーが効果音を追加しなければデフォルトを鳴らす
+            (userMusic || music).play();
+            setAlertOpen(true);
+          }
           // 音声認識が完了して文章が確定
           setFinalText(prevState => {
-            return prevState + transcript;
+            // Android chromeなら値をそのまま返す
+            return android ? transcript : (prevState + transcript);
           });
+          // 文章確定したら候補を削除
           setTranscript("");
-          return;
         }
-        // 音声認識の途中経過
-        if (tagValues.some(value => transcript.includes(value))) {
-          // NOTE: ユーザーが効果音を追加しなければデフォルトを鳴らす
-          (userMusic || music).play();
-          setAlertOpen(true);
-        }
-        setTranscript(transcript);
       });
     };
   });
@@ -138,31 +146,17 @@ const Home = () => {
         </Grid>
         <Box m={2}>
           <Grid container alignItems="center" justify="center">
-            <Grid item xs={3}>
+            <Grid item>
               <Button
                 variant="outlined"
                 disabled={detecting}
-                color="primary"
+                color="secondary"
                 size="large"
                 onClick={() => {
                   recognizerRef.current.start();
                 }}
               >
                 {detecting ? "検知中..." : "検知開始"}
-              </Button>
-            </Grid>
-            <Grid item xs={6}/>
-            <Grid item xs={3}>
-              <Button
-                  variant="outlined"
-                  disabled={!detecting}
-                  color="secondary"
-                  size="large"
-                  onClick={() => {
-                    recognizerRef.current.onend();
-                  }}
-              >
-                {detecting ? "検知停止" : "検知待ち"}
               </Button>
             </Grid>
           </Grid>
