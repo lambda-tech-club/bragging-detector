@@ -8,6 +8,7 @@ import Notice from "../components/notice";
 import UploadButton from "../components/uploadButton";
 import TagField from "../components/tagField";
 import TranscriptField from "../components/transcriptField";
+import Candidates from "../static/candidate_words.json";
 
 const Home = () => {
   // 音声認識インスタンス
@@ -21,7 +22,6 @@ const Home = () => {
   const [transcript, setTranscript] = useState("ボタンを押して検知開始"); // 認識中の文章
   // 単語検知
   const initialTagValues = ["年収"]; // デフォルト検知単語
-  const candidates = ["年収", "自由", "成功"]; // 検知単語候補
   const [tagValues, setTagValues] = useState(initialTagValues); // 検知単語一覧
   // 効果音
   const [userMusic, setUserMusic] = useState(null); // ユーザー追加音
@@ -112,7 +112,7 @@ const Home = () => {
           <Grid item xs={11}>
             <TagField
               disabled={detecting}
-              options={candidates}
+              options={Candidates}
               defaultValue={initialTagValues}
               label="反応する単語"
               placeholder="単語を追加 +"
