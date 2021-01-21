@@ -24,7 +24,7 @@ const UploadButton = props => (
     <label htmlFor="file-input">
       <IconButton
         color="primary"
-        size="large"
+        size="medium"
         disabled={props.disabled}
         aria-label="upload audio"
         component="span"
